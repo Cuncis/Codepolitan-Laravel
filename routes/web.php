@@ -39,9 +39,9 @@ Route::group([
     'as' => 'movie.'
 ], function () use ($movies) {
 
-    Route::get('/', [MovieController::class, 'index']);
+    Route::get('/', [MovieController::class, 'index'])->name('index');
 
-    Route::get('/{id}', [MovieController::class, 'show']);
+    Route::get('/{id}', [MovieController::class, 'show'])->name('show');
 
     Route::post('/', [MovieController::class, 'store']);
 
