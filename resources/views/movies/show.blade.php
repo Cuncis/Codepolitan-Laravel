@@ -8,10 +8,18 @@
                 <div class="flex justify-between items-start mb-4">
                     <h2 class="text-2xl font-bold">{{ $movie['title'] }}</h2>
                     <div class="flex gap-2">
-                        <a href="#"
+                        <a href="{{ route('movie.edit', $movieId) }}"
                             class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition">Edit</a>
-                        <a href="#"
-                            class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition">Remove</a>
+                        <form id="delete-form-{{ $movieId }}" method="POST" action="{{ route('movie.destroy', $movieId) }}"
+                            style="display: none;">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                        <a href="{{ route('movie.destroy', $movieId) }}"
+                            onclick="event.preventDefault(); confirm('Are you sure?'); document.getElementById('delete-form-{{ $movieId }}').submit();"
+                            class="bg-red-600 p-1 rounded hover:bg-red-500">
+                            Remove
+                        </a>
                     </div>
                 </div>
                 <p class="text-gray-400 mb-4">Release Date: {{ $movie['release_date'] }}</p>

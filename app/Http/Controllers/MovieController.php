@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreMovieRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Http\Request;
@@ -114,31 +116,52 @@ class MovieController extends Controller implements HasMiddleware
     //     ], 200);
     // }
 
+    public function create()
+    {
+        return view('movies.create')->with('pageTitle', 'Create New Movie');
+    }
+
     public function show($id)
     {
         // return $this->movies[$id] ?? 'Movie not found';
         $movie = $this->movies[$id] ?? null;
-        return view('movies.show', ['movie' => $movie, 'pageTitle' => 'Movie Details']);
+        return view('movies.show', ['movie' => $movie, 'movieId' => $id, 'pageTitle' => 'Movie Details']);
     }
 
-    public function store()
+    public function store(StoreMovieRequest $request)
     {
-        $this->movies[] = [
-            'title' => request('title'),
-            'director' => request('director'),
-            'year' => request('year'),
+        $newMovie = [
+            'title' => $request->input('title'),
+            'release_date' => $request->input('release_date'),
+            'description' => $request->input('description'),
+            'image' => $request->input('image'),
+            'genres' => explode(',', $request->input('genres')),
+            'cast' => explode(',', $request->input('cast')),
         ];
 
-        return $this->movies;
+        $this->movies[] = $newMovie;
+
+        return $this->index();
     }
 
-    public function update($id)
+    public function edit($id)
+    {
+        $movie = $this->movies[$id];
+        $movie['cast'] = implode(', ', $movie['cast']);
+        $movie['genres'] = implode(', ', $movie['genres']);
+        return view('movies.edit', ['movie' => $movie, 'movieId' => $id, 'pageTitle' => 'Edit Movie']);
+    }
+
+    public function update(Request $request, $id)
     {
         $this->movies[$id]['title'] = request('title');
-        $this->movies[$id]['director'] = request('director');
-        $this->movies[$id]['year'] = request('year');
+        $this->movies[$id]['description'] = request('description');
+        $this->movies[$id]['release_date'] = request('release_date');
+        $this->movies[$id]['cast'] = explode(',', request('cast'));
+        $this->movies[$id]['genres'] = explode(',', request('genres'));
+        $this->movies[$id]['image'] = request('image');
 
-        return $this->movies;
+        return $this->show($id);
     }
 
     public function destroy($id)
@@ -146,6 +169,6 @@ class MovieController extends Controller implements HasMiddleware
         unset($this->movies[$id]);
         // $this->movies = array_values($this->movies); // Reindex the array
 
-        return $this->movies;
+        return $this->index();
     }
 }
