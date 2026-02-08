@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -224,3 +225,9 @@ Route::post('user/profile', [UserController::class, 'createProfile']);
 Route::get('user/profile', [UserController::class, 'userProfile']);
 Route::put('user/profile', [UserController::class, 'updateProfile']);
 Route::delete('user/profile', [UserController::class, 'deleteProfile']);
+
+Route::get('/ratings', [RatingController::class, 'index']);
+
+Route::get('attach-category', [MovieController::class, 'attachCategory']);
+Route::get('detach-category', [MovieController::class, 'detachCategory']);
+Route::get('sync-category', [MovieController::class, 'syncCategory']);
